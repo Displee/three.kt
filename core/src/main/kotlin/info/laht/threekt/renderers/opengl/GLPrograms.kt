@@ -182,6 +182,7 @@ internal class GLPrograms(
 
         val instancing = `object` is InstancedMesh
         val instancingColor = `object` is InstancedMesh && `object`.instanceColor != null
+        val instancingColorAlphas = `object` is InstancedMesh && `object`.instanceColor?.itemSize == 4
 
         val supportsVertexTextures = capabilities.vertexTextures
         val outputEncoding = getTextureEncodingFromMap(renderer.getRenderTarget()?.texture, renderer.gammaOutput)
@@ -269,6 +270,7 @@ private val parameterNames = listOf(
     "precision",
     "instancing",
     "instancingColor",
+    "instancingColorAlphas",
     "supportsVertexTextures",
     "map",
     "mapEncoding",

@@ -2,7 +2,7 @@ package info.laht.threekt.renderers.shaders.chunk
 
 internal val __color_vertex = """ 
  
-#if defined( USE_COLOR_ALPHA )
+#if defined( USE_COLOR_ALPHA ) || defined( USE_INSTANCING_COLOR_ALPHA )
 
 	vColor = vec4( 1.0 );
 
@@ -20,7 +20,7 @@ internal val __color_vertex = """
 
 #ifdef USE_INSTANCING_COLOR
 
-	vColor.xyz *= instanceColor.xyz;
+	vColor *= instanceColor;
 
 #endif
 
