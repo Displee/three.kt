@@ -39,6 +39,7 @@ internal class GLRenderLists {
         override fun onEvent(event: Event) {
             val scene = event.target as Scene
             scene.removeEventListener("dispose", this)
+            lists.remove(scene.id)
         }
 
     }
