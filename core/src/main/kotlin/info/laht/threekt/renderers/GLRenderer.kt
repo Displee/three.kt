@@ -426,7 +426,8 @@ class GLRenderer(
                     GL20.glVertexAttribPointer(programAttribute + 3, 4, type, false, 64, 48)
                 } else if (name == "instanceColor") {
                     `object` as InstancedMesh
-                    val attribute = attributes.get(`object`.instanceColor!!)
+                    val bufferAttribute = `object`.instanceColor!!
+                    val attribute = attributes.get(bufferAttribute)
 
                     // TODO Attribute may not be available on context restore
 
@@ -441,7 +442,7 @@ class GLRenderer(
 
                     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, buffer)
 
-                    GL20.glVertexAttribPointer(programAttribute, 3, type, false, 12, 0)
+                    GL20.glVertexAttribPointer(programAttribute, bufferAttribute.itemSize, type, false, bufferAttribute.itemSize * 4, 0)
                 } else if (material is MaterialWithDefaultAttributeValues) {
 
                     val value = material.defaultAttributeValues[name] as FloatArray?
@@ -926,6 +927,7 @@ class GLRenderer(
         }
 
         materialProperties["vertexAlphas"] = parameters.vertexAlphas
+        materialProperties["instancingColorAlphas"] = parameters.instancingColorAlphas
 
         materialProperties["fog"] = fog
 

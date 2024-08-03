@@ -48,8 +48,10 @@ object InstancedMeshExample {
 
             val color = Color() // Added whitesmoke color because hemisphere lighting isn't working
             val geometry = IcosahedronBufferGeometry(0.5f, 3)
-            val material = MeshPhongMaterial()
-            val mesh = InstancedMesh(geometry, mutableListOf(material), count)
+            val material = MeshPhongMaterial().apply {
+                transparent = true
+            }
+            val mesh = InstancedMesh(geometry, mutableListOf(material), count, true)
 
             val offset = (amount.toDouble() - 1) / 2
             val matrix = Matrix4()
@@ -81,7 +83,7 @@ object InstancedMeshExample {
                 if (intersection.isNotEmpty()) {
                     val instanceId = intersection.firstOrNull()?.instanceId
                     if (instanceId != null) {
-                        mesh.setColorAt(instanceId, color.set((Math.random().toFloat() * 0xFFFFFF).toInt()))
+                        mesh.setColorAt(instanceId, color.set((Math.random().toFloat() * 0xFFFFFF).toInt()), Math.random().toFloat())
                         mesh.instanceColor?.needsUpdate = true
                     }
                 }
