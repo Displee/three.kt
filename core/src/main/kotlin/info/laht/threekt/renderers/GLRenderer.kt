@@ -1661,6 +1661,10 @@ class GLRenderer(
         uniforms["hemisphereLights"]?.needsUpdate = value
     }
 
+    fun resetBoundTextures() {
+        state.resetBoundTextures()
+    }
+
     private inner class OnMaterialDispose : EventLister {
         override fun onEvent(event: Event) {
             val material = event.target as Material

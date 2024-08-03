@@ -514,6 +514,10 @@ internal class GLState {
 
     }
 
+    fun resetBoundTextures() {
+        currentBoundTextures.clear()
+    }
+
     fun reset() {
 
         enabledAttributes.forEachIndexed { i, v ->
