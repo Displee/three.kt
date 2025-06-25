@@ -18,7 +18,6 @@ import java.nio.ByteBuffer
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.imageio.ImageIO
 
-
 private const val DEFAULT_WIDTH = 800
 private const val DEFAULT_HEIGHT = 600
 
@@ -170,6 +169,13 @@ class Window @JvmOverloads constructor(
             }
 
             // In order to see anything, we createShader a new pointer using GLFW's glfwCreateWindow().
+            val macOS = System.getProperty("os.name").lowercase().contains("mac")
+            if (macOS) {
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4)
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1)
+                glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
+                glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE)
+            }
             glfwWindowHint(GLFW_RESIZABLE, if (options.resizeable) GLFW_TRUE else GLFW_FALSE)
             val hwnd = glfwCreateWindow(width, height, options.title, 0, 0)
 
@@ -185,7 +191,8 @@ class Window @JvmOverloads constructor(
 
             // Set favicon
             val favicon = options.favicon
-            if (favicon != null) {
+            // GLFW doesn't support window icons for Mac (https://github.com/LWJGL/lwjgl3/issues/695)
+            if (favicon != null && !macOS) {
                 val rasterBuffer = favicon.raster.dataBuffer
                 val buffer: ByteBuffer
                 when (rasterBuffer) {
@@ -224,7 +231,9 @@ class Window @JvmOverloads constructor(
 
             // required for various point stuff to work
             GL11.glEnable(GL32.GL_PROGRAM_POINT_SIZE)
-            GL11.glEnable(GL20.GL_POINT_SPRITE)
+            if (!GL.getCapabilities().OpenGL41) {
+                GL11.glEnable(GL20.GL_POINT_SPRITE)
+            }
 
             // Return the handle to the created pointer.
             return hwnd

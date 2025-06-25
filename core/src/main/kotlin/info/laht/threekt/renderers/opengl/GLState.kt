@@ -62,8 +62,10 @@ internal class GLState {
 
     private val emptyTextures = mapOf(
         GL11.GL_TEXTURE_2D to createTexture(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_2D, 1),
-        GL13.GL_TEXTURE_CUBE_MAP to createTexture(GL13.GL_TEXTURE_CUBE_MAP, GL13.GL_TEXTURE_CUBE_MAP, 6)
+        GL13.GL_TEXTURE_CUBE_MAP to createTexture(GL13.GL_TEXTURE_CUBE_MAP, GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X, 6)
     )
+
+    private var vaoId = 0
 
     init {
         enable(GL11.GL_DEPTH_TEST)
@@ -77,6 +79,17 @@ internal class GLState {
         for (i in 0 until newAttributes.size) {
             newAttributes[i] = 0
         }
+    }
+
+    fun bindVertexArrayObject() {
+        if (vaoId == 0) {
+            vaoId = GL30.glGenVertexArrays()
+        }
+        GL30.glBindVertexArray(vaoId)
+    }
+
+    fun unbindVertexArrayObject() {
+        GL30.glBindVertexArray(0)
     }
 
     fun enableAttribute(attribute: Int) {
@@ -131,7 +144,7 @@ internal class GLState {
         GL11.glTexParameteri(type, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
 
         for (i in 0 until count) {
-            GL11.glTexImage2D(target + 1, 0, GL11.GL_RGBA, 1, 1, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, data)
+            GL11.glTexImage2D(target + i, 0, GL11.GL_RGBA, 1, 1, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, data)
         }
 
         return texture

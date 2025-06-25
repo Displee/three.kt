@@ -30,7 +30,7 @@ dependencies {
     implementation("cuchaz:jfxgl-jfxrt:0.4")
 
     // DriftFX
-    def lwjglVersion = "3.2.3"
+    def lwjglVersion = "3.3.4"
     implementation("org.lwjgl:lwjgl:$lwjglVersion")
     implementation("org.lwjgl:lwjgl-glfw:$lwjglVersion")
     implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion")

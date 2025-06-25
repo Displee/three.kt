@@ -347,6 +347,7 @@ class GLRenderer(
             renderer.render(drawStart, drawCount)
         }
 
+        state.unbindVertexArrayObject()
     }
 
 
@@ -373,6 +374,7 @@ class GLRenderer(
     private fun setupVertexAttributes(`object`: Object3D, material: Material, program: GLProgram, geometry: BufferGeometry) {
 
         state.initAttributes()
+        state.bindVertexArrayObject()
 
         val geometryAttributes = geometry.attributes
         val programAttributes = program.attributes
