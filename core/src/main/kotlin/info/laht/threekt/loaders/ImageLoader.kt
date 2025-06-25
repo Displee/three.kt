@@ -2,7 +2,6 @@ package info.laht.threekt.loaders
 
 import info.laht.threekt.textures.Image
 import org.lwjgl.BufferUtils
-import java.awt.geom.AffineTransform
 import java.awt.image.BufferedImage
 import java.io.File
 import java.nio.ByteOrder
@@ -58,24 +57,16 @@ object ImageLoader {
     }
 
     private fun createFlipped(image: BufferedImage): BufferedImage {
-        val at = AffineTransform()
-        at.concatenate(AffineTransform.getScaleInstance(1.0, -1.0))
-        at.concatenate(AffineTransform.getTranslateInstance(0.0, (-image.height).toDouble()))
-        return createTransformed(image, at)
-    }
-
-    private fun createTransformed(
-            image: BufferedImage, at: AffineTransform
-    ): BufferedImage {
-        val newImage = BufferedImage(
-                image.width, image.height,
-                BufferedImage.TYPE_INT_ARGB
-        )
-        val g = newImage.createGraphics()
-        g.transform(at)
-        g.drawImage(image, 0, 0, null)
-        g.dispose()
-        return newImage
+        val width = image.width
+        val height = image.height
+        val flipped = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val pixel = image.getRGB(x, y)
+                flipped.setRGB(x, height - y - 1, pixel)
+            }
+        }
+        return flipped
     }
 
 }
