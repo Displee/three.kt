@@ -41,18 +41,7 @@ public class JavaExample {
 
             new OrbitControls(camera, window);
 
-            new Thread(() -> {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                window.close();
-            }).start();
-
-            window.onCloseCallback = () -> {
-                System.out.println("Window closed");
-            };
+            window.onCloseCallback = () -> new Thread(window::close).start();
 
             window.animate(() -> {
                 renderer.render(scene, camera);
