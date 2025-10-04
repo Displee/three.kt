@@ -246,7 +246,7 @@ private class SingleUniform(
     private val addr: Int
 ) : UniformObject(id) {
 
-    private val floatCache = mutableListOf<Float>()
+    private val floatCache: ArrayList<Float> = ArrayList<Float>()
 
     private val setValue = getSingularSetter(activeInfo)
 

@@ -135,22 +135,26 @@ internal fun FloatArray.contentEquals(list: List<Float>, allowLongerList: Boolea
         if (size != list.size) return false
     }
 
-    for (i in 0 until size) {
-        if (get(i).compareTo(list[i]) != 0) return false
+    for (i in indices) {
+        if (this[i] != list[i]) return false
     }
 
     return true
 }
 
 
-internal fun FloatArray.copyInto(list: MutableList<Float>): MutableList<Float> {
+internal fun FloatArray.copyInto(list: ArrayList<Float>): MutableList<Float> {
 
-    while (list.size < size) {
-        list.add(0f)
+    // Ensure capacity in one step instead of looping adds
+    if (list.size < size) {
+        list.ensureCapacity(size)
+        while (list.size < size) {
+            list.add(0f)
+        }
     }
 
-    forEachIndexed { i, v ->
-        list[i] = v
+    for (i in indices) {
+        list[i] = this[i]
     }
 
     return list

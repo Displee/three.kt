@@ -19,7 +19,7 @@ sealed class BufferAttribute(
 
     abstract val size: Int
 
-    internal val count: Int
+    val count: Int
         get() = size / itemSize
 
     var dynamic: Boolean = false

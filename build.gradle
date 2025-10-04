@@ -9,7 +9,7 @@ wrapper {
 }
 
 group = "info.laht.threekt"
-version = "r1-ALPHA-28"
+version = "r1-ALPHA-36"
 
 println("Gradle version is ${gradle.gradleVersion}")
 println("Building three.kt $version")
