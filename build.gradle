@@ -3,16 +3,8 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.5.10" apply(false)
 }
 
-wrapper {
-    distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = '6.7'
-}
-
 group = "info.laht.threekt"
 version = "r1-ALPHA-36"
-
-println("Gradle version is ${gradle.gradleVersion}")
-println("Building three.kt $version")
 
 subprojects { sub ->
 
@@ -28,14 +20,6 @@ subprojects { sub ->
 
     dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    }
-
-    compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-        kotlinOptions.javaParameters = true
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
     }
 
 }

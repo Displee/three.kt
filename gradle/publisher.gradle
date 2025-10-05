@@ -7,14 +7,14 @@ class PublishPlugin implements Plugin<Project> {
     protected Jar sourcesJar(Project project) {
         Jar task = project.tasks.create("sourcesJar", Jar.class)
         task.from project.sourceSets.main.allSource
-        task.classifier = 'sources'
+        task.archiveClassifier = 'sources'
         return task
     }
 
     protected Jar javadocJar(Project project) {
         Jar task = project.tasks.create("javadocJar", Jar.class)
         task.from project.javadoc.destinationDir
-        task.classifier = 'javadoc'
+        task.archiveClassifier = 'javadoc'
         return task
     }
 
@@ -23,6 +23,8 @@ class PublishPlugin implements Plugin<Project> {
         project.apply(plugin: MavenPublishPlugin)
 
         def extension = project.extensions.create('pomDescription', PublishPluginExtension)
+
+        project.group = "com.displee.threekt"
 
         project.publishing {
             publications {
@@ -35,10 +37,10 @@ class PublishPlugin implements Plugin<Project> {
                     pom {
                         name = project.archivesBaseName
                         description = extension.description
-                        url = 'https://github.com/markaren/three.kt'
+                        url = 'scm:git:git://github.com/Displee/three.kt.git'
 
                         scm {
-                            url = 'https://github.com/markaren/three.kt/tree/master'
+                            url = 'https://github.com/Displee/three.kt'
                         }
 
                         licenses {
@@ -65,8 +67,8 @@ class PublishPlugin implements Plugin<Project> {
 
                 repositories {
                     maven {
-                        def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-                        def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+                        def releasesRepoUrl = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
+                        def snapshotsRepoUrl = "https://central.sonatype.com/repository/maven-snapshots/"
                         url project.version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
                         credentials {
                             username = project.ossrhUsername
