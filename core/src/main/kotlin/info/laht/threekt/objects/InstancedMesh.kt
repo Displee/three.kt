@@ -11,11 +11,13 @@ import info.laht.threekt.math.Matrix4
 class InstancedMesh(
     geometry: BufferGeometry? = null,
     materials: MutableList<Material>? = null,
-    var count: Int
+    var count: Int,
+    var useColorAlphas: Boolean = false
 ) : Mesh(geometry, materials) {
 
     val instanceMatrix: FloatBufferAttribute = FloatBufferAttribute(FloatArray(count * 16), 16)
     var instanceColor: FloatBufferAttribute? = null
+    private var colorsItemSize = if (useColorAlphas) 4 else 3
     override var frustumCulled = false
 
     fun copy(source: InstancedMesh): InstancedMesh {
@@ -29,18 +31,21 @@ class InstancedMesh(
     fun getColorAt(index: Int, color: Color) {
         val instanceColor = this.instanceColor
         checkNotNull(instanceColor) { "Instance color is null." }
-        color.fromArray(instanceColor.buffer, index * 3)
+        color.fromArray(instanceColor.buffer, index * colorsItemSize)
     }
 
     fun getMatrixAt(index: Int, matrix: Matrix4) {
         matrix.fromArray(instanceMatrix.buffer, index * 16)
     }
 
-    fun setColorAt(index: Int, color: Color) {
+    fun setColorAt(index: Int, color: Color, opacity: Float = 1F) {
         if (instanceColor === null) {
-            instanceColor = FloatBufferAttribute(FloatArray(count * 3), 3)
+            instanceColor = FloatBufferAttribute(FloatArray(count * colorsItemSize), colorsItemSize)
         }
-        color.toArray(instanceColor!!.buffer, index * 3)
+        color.toArray(instanceColor!!.buffer, index * colorsItemSize)
+        if (useColorAlphas) {
+            instanceColor?.set(index * colorsItemSize + 3, opacity)
+        }
     }
 
     fun setMatrixAt(index: Int, matrix: Matrix4) {

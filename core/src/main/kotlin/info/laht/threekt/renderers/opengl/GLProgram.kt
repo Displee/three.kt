@@ -122,6 +122,7 @@ internal class GLProgram(
 
                     if (parameters.instancing) "#define USE_INSTANCING" else "",
                     if (parameters.instancingColor) "#define USE_INSTANCING_COLOR" else "",
+                    if (parameters.instancingColorAlphas) "#define USE_INSTANCING_COLOR_ALPHA" else "",
 
                     if (parameters.supportsVertexTextures) "#define VERTEX_TEXTURES" else "",
 
@@ -148,7 +149,7 @@ internal class GLProgram(
 
                     if (parameters.vertexTangents) "#define USE_TANGENT" else "",
                     if (parameters.vertexColors.value > 0) "#define USE_COLOR" else "",
-                    if (parameters.vertexAlphas) "#define USE_COLOR_ALPHA" else "",
+                    if (parameters.vertexAlphas || parameters.instancingColorAlphas) "#define USE_COLOR_ALPHA" else "",
 
                     if (parameters.flatShading) "#define FLAT_SHADED" else "",
 
@@ -176,7 +177,9 @@ internal class GLProgram(
                     "	attribute mat4 instanceMatrix;",
                     "#endif",
 
-                    "#ifdef USE_INSTANCING_COLOR",
+                    "#if defined ( USE_INSTANCING_COLOR_ALPHA )",
+                    "	attribute vec4 instanceColor;",
+                    "#elif defined ( USE_INSTANCING_COLOR )",
                     "	attribute vec3 instanceColor;",
                     "#endif",
 
@@ -271,7 +274,7 @@ internal class GLProgram(
 
                     if (parameters.vertexTangents) "#define USE_TANGENT" else "",
                     if (parameters.vertexColors.value > 0 || parameters.instancingColor) "#define USE_COLOR" else "",
-                    if (parameters.vertexAlphas) "#define USE_COLOR_ALPHA" else "",
+                    if (parameters.vertexAlphas || parameters.instancingColorAlphas) "#define USE_COLOR_ALPHA" else "",
 
                     if (parameters.gradientMap) "#define USE_GRADIENTMAP" else "",
 
