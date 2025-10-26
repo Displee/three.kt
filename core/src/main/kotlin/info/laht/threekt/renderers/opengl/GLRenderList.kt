@@ -4,7 +4,6 @@ import info.laht.threekt.core.BufferGeometry
 import info.laht.threekt.core.GeometryGroup
 import info.laht.threekt.core.Object3D
 import info.laht.threekt.materials.Material
-import kotlin.math.roundToInt
 
 internal class GLRenderList {
 
@@ -105,23 +104,23 @@ internal class GLRenderList {
 
     fun sort() {
         if (opaque.size > 1) {
-            opaque.sortedWith(Comparator { a, b ->
+            opaque.sortWith(Comparator { a, b ->
                 when {
                     a.groupOrder != b.groupOrder -> a.groupOrder - b.groupOrder
                     a.renderOrder != b.renderOrder -> a.renderOrder - b.renderOrder
                     a.program.id != b.program.id -> a.program.id - b.program.id
                     a.material.id != b.material.id -> a.material.id - b.material.id
-                    a.z != b.z -> (a.z - b.z).roundToInt()
+                    a.z != b.z -> a.z.compareTo(b.z)
                     else -> a.id - b.id
                 }
             })
         }
         if (transparent.size > 1) {
-            transparent.sortedWith(Comparator { a, b ->
+            transparent.sortWith(Comparator { a, b ->
                 when {
                     a.groupOrder != b.groupOrder -> a.groupOrder - b.groupOrder
                     a.renderOrder != b.renderOrder -> a.renderOrder - b.renderOrder
-                    a.z != b.z -> (b.z - a.z).roundToInt()
+                    a.z != b.z -> b.z.compareTo(a.z)
                     else -> a.id - b.id
                 }
             })
