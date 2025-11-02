@@ -18,6 +18,19 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicInteger
 
+private val versionRegex = "^\\s*#version\\s+300\\s+es\\s*\n".toRegex()
+
+private val numDirLightsRegex = "NUM_DIR_LIGHTS".toRegex()
+private val numSpotLightsRegex = "NUM_SPOT_LIGHTS".toRegex()
+private val numRectAreaLightsRegex = "NUM_RECT_AREA_LIGHTS".toRegex()
+private val numPointLightsRegex = "NUM_POINT_LIGHTS".toRegex()
+private val numHemiLightsRegex = "NUM_HEMI_LIGHTS".toRegex()
+
+private val includesRegex = "^[ \\t]*#include +<([\\w\\d./]+)>".toRegex(RegexOption.MULTILINE)
+
+private val unrollLoopRegex = "#pragma unroll_loop[\\s]+?for \\( int i \\= (\\d+)\\; i < (\\d+)\\; i \\+\\+ \\) \\{([\\s\\S]+?)(?=\\})\\}".toRegex()
+private val unrollLoopGroupRegex = "\\[ i \\]".toRegex()
+
 internal sealed class _GLProgram : Program
 
 internal object GLProgramDefault : _GLProgram() {
@@ -349,8 +362,6 @@ internal class GLProgram(
 
             var isGLSL3ShaderMaterial = false
 
-            val versionRegex = "^\\s*#version\\s+300\\s+es\\s*\n".toRegex()
-
             if (material is ShaderMaterial &&
                     versionRegex.containsMatchIn(vertexShader) &&
                     versionRegex.containsMatchIn(fragmentShader)
@@ -539,11 +550,11 @@ internal class GLProgram(
 
         private fun replaceLightNums(string: String, parameters: GLPrograms.Parameters): String {
             return string
-                    .replace("NUM_DIR_LIGHTS".toRegex(), "${parameters.numDirLights}")
-                    .replace("NUM_SPOT_LIGHTS".toRegex(), "${parameters.numSpotLights}")
-                    .replace("NUM_RECT_AREA_LIGHTS".toRegex(), "${parameters.numRectAreaLights}")
-                    .replace("NUM_POINT_LIGHTS".toRegex(), "${parameters.numPointLights}")
-                    .replace("NUM_HEMI_LIGHTS".toRegex(), "${parameters.numHemiLights}")
+                    .replace(numDirLightsRegex, "${parameters.numDirLights}")
+                    .replace(numSpotLightsRegex, "${parameters.numSpotLights}")
+                    .replace(numRectAreaLightsRegex, "${parameters.numRectAreaLights}")
+                    .replace(numPointLightsRegex, "${parameters.numPointLights}")
+                    .replace(numHemiLightsRegex, "${parameters.numHemiLights}")
         }
 
         private fun replaceClippingPlaneNums(string: String, parameters: GLPrograms.Parameters): String {
@@ -556,9 +567,7 @@ internal class GLProgram(
 
         private fun parseIncludes(string: String): String {
 
-            val regex = "^[ \\t]*#include +<([\\w\\d./]+)>".toRegex(RegexOption.MULTILINE)
-
-            return regex.replace(string) { m ->
+            return includesRegex.replace(string) { m ->
 
                 val include = m.groups[1]!!.value
                 parseIncludes(ShaderChunk[include])
@@ -569,9 +578,7 @@ internal class GLProgram(
 
         private fun unrollLoops(string: String): String {
 
-            val pattern = "#pragma unroll_loop[\\s]+?for \\( int i \\= (\\d+)\\; i < (\\d+)\\; i \\+\\+ \\) \\{([\\s\\S]+?)(?=\\})\\}".toRegex()
-
-            return string.replace(pattern) { match ->
+            return string.replace(unrollLoopRegex) { match ->
 
                 var unroll = ""
 
@@ -579,7 +586,7 @@ internal class GLProgram(
                 val end = match.groups[2]!!.value.toInt()
 
                 for (i in start until end) {
-                    unroll += match.groups[3]?.value?.replace("\\[ i \\]".toRegex(), "[ $i ]")
+                    unroll += match.groups[3]?.value?.replace(unrollLoopGroupRegex, "[ $i ]")
                 }
 
                 unroll

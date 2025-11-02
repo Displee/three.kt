@@ -14,6 +14,7 @@ import kotlin.math.roundToInt
 private var emptyTexture = Texture()
 private var emptyCubeTexture = CubeTexture()
 
+private val regex = "([\\w\\d_]+)(\\])?(\\[|\\.)?".toRegex()
 
 internal class Cache {
 
@@ -134,8 +135,6 @@ internal class GLUniforms(
 
             val path = activeInfo.name
             val pathLength = path.length
-
-            val regex = "([\\w\\d_]+)(\\])?(\\[|\\.)?".toRegex()
 
             var match = regex.find(path)
             while (match != null) {
