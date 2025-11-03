@@ -76,6 +76,11 @@ internal class GLPrograms(
             array.add(parameters[name] ?: "null")
         }
 
+        // extra properties
+        array.add(material.transparent.toString())
+        array.add(material.blending.toString())
+        array.add(material.map?.name ?: "null")
+
         material.onBeforeCompile?.also {
             array.add(it.hashCode().toString()) // TODO verify
         }
@@ -101,7 +106,7 @@ internal class GLPrograms(
 
             val programInfo = programs[i]
 
-            if (programInfo.code === code) {
+            if (programInfo.code == code) {
 
                 program = programInfo
                 ++program.usedTimes

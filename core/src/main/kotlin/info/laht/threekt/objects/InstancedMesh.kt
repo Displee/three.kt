@@ -37,7 +37,7 @@ class InstancedMesh(
     }
 
     fun setColorAt(index: Int, color: Color) {
-        if (instanceColor === null) {
+        if (instanceColor == null) {
             instanceColor = FloatBufferAttribute(FloatArray(count * 3), 3)
         }
         color.toArray(instanceColor!!.buffer, index * 3)

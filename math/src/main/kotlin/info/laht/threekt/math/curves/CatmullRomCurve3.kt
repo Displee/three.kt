@@ -87,7 +87,7 @@ class CatmullRomCurve3(
             py.initNonuniformCatmullRom(p0.y, p1.y, p2.y, p3.y, dt0, dt1, dt2)
             pz.initNonuniformCatmullRom(p0.z, p1.z, p2.z, p3.z, dt0, dt1, dt2)
 
-        } else if (this.curveType === CurveType.catmullrom) {
+        } else if (this.curveType == CurveType.catmullrom) {
 
             px.initCatmullRom(p0.x, p1.x, p2.x, p3.x, this.tension)
             py.initCatmullRom(p0.y, p1.y, p2.y, p3.y, this.tension)

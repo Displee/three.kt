@@ -55,112 +55,6 @@ internal inline fun <reified T> MutableList<T>.add(v1: T, v2: T, v3: T) {
     add(v3)
 }
 
-internal inline fun <reified T> MutableList<T>.safeSet(v1: T) {
-    if (size == 0) {
-        add(v1)
-    } else {
-        set(0, v1)
-    }
-}
-
-internal inline fun <reified T> MutableList<T>.safeSet(v1: T, v2: T) {
-    if (size == 0) {
-        add(v1)
-        add(v2)
-    } else if (size == 1) {
-        set(0, v1)
-        add(v2)
-    } else {
-        set(0, v1)
-        set(1, v2)
-
-    }
-}
-
-internal inline fun <reified T> MutableList<T>.safeSet(v1: T, v2: T, v3: T) {
-    if (size == 0) {
-        add(v1)
-        add(v2)
-        add(v3)
-    } else if (size == 1) {
-        set(0, v1)
-        add(v2)
-        add(v3)
-    } else if (size == 2) {
-        set(0, v1)
-        set(1, v2)
-        add(v3)
-    } else {
-        set(0, v1)
-        set(1, v2)
-        set(2, v3)
-    }
-}
-
-internal inline fun <reified T> MutableList<T>.safeSet(v1: T, v2: T, v3: T, v4: T) {
-    if (size == 0) {
-        add(v1)
-        add(v2)
-        add(v3)
-        add(v4)
-    } else if (size == 1) {
-        set(0, v1)
-        add(v2)
-        add(v3)
-        add(v4)
-    } else if (size == 2) {
-        set(0, v1)
-        set(1, v2)
-        add(v3)
-        add(v4)
-    } else if (size == 3) {
-        set(0, v1)
-        set(1, v2)
-        set(2, v3)
-        add(v4)
-    } else {
-        set(0, v1)
-        set(1, v2)
-        set(2, v3)
-        set(3, v4)
-    }
-}
-
-
-internal fun FloatArray.contentEquals(list: List<Float>, allowLongerList: Boolean = false): Boolean {
-
-    if (allowLongerList) {
-        if (size > list.size) return false
-    } else {
-        if (size != list.size) return false
-    }
-
-    for (i in indices) {
-        if (this[i] != list[i]) return false
-    }
-
-    return true
-}
-
-
-internal fun FloatArray.copyInto(list: ArrayList<Float>): MutableList<Float> {
-
-    // Ensure capacity in one step instead of looping adds
-    if (list.size < size) {
-        list.ensureCapacity(size)
-        while (list.size < size) {
-            list.add(0f)
-        }
-    }
-
-    for (i in indices) {
-        list[i] = this[i]
-    }
-
-    return list
-
-}
-
 internal inline fun <reified T> MutableList<T>.splice(start: Int, deleteCount: Int, vararg elements: T) {
 
     if (deleteCount > 0) {
@@ -172,7 +66,6 @@ internal inline fun <reified T> MutableList<T>.splice(start: Int, deleteCount: I
     }
 
 }
-
 
 internal inline fun <reified T> MutableList<T>.push(value: T): Int {
     add(value)
