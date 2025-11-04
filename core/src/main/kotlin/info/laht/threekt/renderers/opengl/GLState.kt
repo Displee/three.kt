@@ -54,8 +54,9 @@ internal class GLState {
 
     var lineWidthAvailable = false
 
-    var currentTextureSlot: Int? = null
-    var currentBoundTextures = mutableMapOf<Int?, BoundTexture>()
+    val maxTextureUnits = GL11.glGetInteger(GL20.GL_MAX_TEXTURE_IMAGE_UNITS)
+    var currentTextureSlot = -1
+    var currentBoundTextures = Array(maxTextureUnits) { BoundTexture(null, null) }
 
     var currentScissor = Vector4()
     var currentViewport = Vector4()
@@ -443,7 +444,7 @@ internal class GLState {
     fun activeTexture(glSlot: Int? = null) {
 
         @Suppress("NAME_SHADOWING")
-        val glSlot = glSlot ?: GL13.GL_TEXTURE0 + maxTextures - 1
+        val glSlot = glSlot ?: (GL13.GL_TEXTURE0 + maxTextures - 1)
 
         if (currentTextureSlot != glSlot) {
 
@@ -455,31 +456,21 @@ internal class GLState {
     }
 
     fun bindTexture(glType: Int, glTexture: Int?) {
-
-        if (currentTextureSlot == null) {
-
+        if (currentTextureSlot == -1) {
             activeTexture()
-
         }
 
-        var boundTexture = currentBoundTextures[currentTextureSlot]
-
-        if (boundTexture == null) {
-
-            boundTexture = BoundTexture(type = null, texture = null)
-            currentBoundTextures[currentTextureSlot] = boundTexture
-
+        if (currentTextureSlot == -1) {
+            LOG.warn("GLState: No texture bound to current texture slot.")
+            return
         }
 
+        val boundTexture = currentBoundTextures[currentTextureSlot - GL13.GL_TEXTURE0]
         if (boundTexture.type != glType || boundTexture.texture != glTexture) {
-
             GL11.glBindTexture(glType, glTexture ?: emptyTextures[glType]!!)
-
             boundTexture.type = glType
             boundTexture.texture = glTexture
-
         }
-
     }
 
     fun texImage2D(
@@ -528,7 +519,10 @@ internal class GLState {
     }
 
     fun resetBoundTextures() {
-        currentBoundTextures.clear()
+        for (boundTexture in currentBoundTextures) {
+            boundTexture.type = null
+            boundTexture.texture = null
+        }
     }
 
     fun reset() {
@@ -542,8 +536,8 @@ internal class GLState {
 
         enabledCapabilities.clear()
 
-        currentTextureSlot = null
-        currentBoundTextures.clear()
+        currentTextureSlot = -1
+        resetBoundTextures()
 
         currentProgram = null
 
