@@ -340,6 +340,7 @@ open class Mesh(
 
         this.drawMode = source.drawMode
         this.materials.addAll(source.materials)
+        this.userData.putAll(source.userData)
 
         return this
 
