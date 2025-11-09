@@ -339,14 +339,14 @@ open class Mesh(
         super<Object3DImpl>.copy(source, true)
 
         this.drawMode = source.drawMode
-        this.material.copy(source.material)
+        this.materials.addAll(source.materials)
 
         return this
 
     }
 
     override fun clone(): Mesh {
-        return Mesh(geometry, material).copy(this)
+        return Mesh(geometry, materials).copy(this)
     }
 
 
