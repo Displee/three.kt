@@ -347,7 +347,7 @@ open class Mesh(
     }
 
     override fun clone(): Mesh {
-        return Mesh(geometry, materials).copy(this)
+        return Mesh(geometry.clone(), materials.toMutableList()).copy(this)
     }
 
 
