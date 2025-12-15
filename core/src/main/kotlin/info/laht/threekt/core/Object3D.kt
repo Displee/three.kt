@@ -255,6 +255,7 @@ interface Object3D : Cloneable, EventDispatcher {
         `object`.parent = this
         children.add(`object`)
         `object`.dispatchEvent("added", this)
+        dispatchEvent("childadded", `object`)
 
         return this
     }
@@ -277,6 +278,7 @@ interface Object3D : Cloneable, EventDispatcher {
         if (children.remove(`object`)) {
             `object`.parent = null
             `object`.dispatchEvent("removed", this)
+            dispatchEvent("childremoved", `object`)
         }
 
         return this
