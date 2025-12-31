@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "info.laht.threekt"
-version = "r1-ALPHA-43"
+version = "r1-ALPHA-44"
 
 subprojects { sub ->
 

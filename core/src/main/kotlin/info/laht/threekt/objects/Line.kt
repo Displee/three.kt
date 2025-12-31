@@ -2,6 +2,7 @@ package info.laht.threekt.objects
 
 import info.laht.threekt.core.*
 import info.laht.threekt.materials.LineBasicMaterial
+import info.laht.threekt.math.Matrix4
 import info.laht.threekt.math.Vector3
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -47,8 +48,63 @@ open class Line @JvmOverloads constructor(
     }
 
     override fun raycast(raycaster: Raycaster, intersects: MutableList<Intersection>) {
-        TODO()
+        val matrixWorld = this.matrixWorld
+        val threshold = raycaster.params.line.threshold
+
+        // early out if no position or empty attribute
+        val position = geometry.attributes.position ?: return
+        val localRay = raycaster.ray.clone().apply {
+            // convert ray to local space
+            val inverseMatrix = Matrix4().copy(matrixWorld).invert()
+            applyMatrix4(inverseMatrix)
+        }
+
+        val start = Vector3()
+        val end = Vector3()
+        val interSegment = Vector3()
+        val interRay = Vector3()
+
+        val step = if (this is LineSegments) 2 else 1
+        val endCount = position.count - 1
+
+        var i = 0
+        while (i < endCount) {
+
+            start.fromArray(position.buffer, i * position.itemSize)
+            end.fromArray(position.buffer, (i + 1) * position.itemSize)
+
+            val distSq = localRay.distanceSqToSegment(
+                start,
+                end,
+                interRay,
+                interSegment
+            )
+
+            if (distSq <= threshold * threshold) {
+
+                // convert intersection point back to world space
+                interSegment.applyMatrix4(matrixWorld)
+
+                val distance = raycaster.ray.origin.distanceTo(interSegment)
+                if (distance < raycaster.near || distance > raycaster.far) {
+                    i += step
+                    continue
+                }
+
+                intersects.add(
+                    Intersection(
+                        distance = distance,
+                        point = interSegment.clone(),
+                        index = i,
+                        face = null,
+                        `object` = this
+                    )
+                )
+            }
+            i += step
+        }
     }
+
 
     fun copy(source: Line): Line {
         super<Object3DImpl>.copy(source, false)

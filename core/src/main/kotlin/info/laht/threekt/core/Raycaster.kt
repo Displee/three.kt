@@ -12,7 +12,8 @@ class Raycaster @JvmOverloads constructor(
         origin: Vector3 = Vector3(),
         direction: Vector3 = Vector3(),
         val near: Float = 0f,
-        val far: Float = Float.POSITIVE_INFINITY
+        val far: Float = Float.POSITIVE_INFINITY,
+        val params: RaycasterParams = RaycasterParams()
 ) {
 
     val ray = Ray(origin, direction)
@@ -140,3 +141,21 @@ data class Intersection internal constructor(
     }
 
 }
+
+data class RaycasterParams(
+    val mesh: MeshParams = MeshParams(),
+    val line: LineParams = LineParams(),
+    val points: PointsParams = PointsParams()
+)
+
+data class LineParams(
+    var threshold: Float = 1f
+)
+
+data class PointsParams(
+    var threshold: Float = 1f
+)
+
+data class MeshParams(
+    var placeholder: Boolean = false
+)
