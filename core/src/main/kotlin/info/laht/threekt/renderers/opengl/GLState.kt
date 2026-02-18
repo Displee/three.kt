@@ -69,6 +69,10 @@ internal class GLState {
     private var vaoId = 0
 
     init {
+        val range = FloatArray(2)
+        GL11.glGetFloatv(GL12.GL_ALIASED_LINE_WIDTH_RANGE, range)
+        lineWidthAvailable = range[1] > 1f
+
         enable(GL11.GL_DEPTH_TEST)
         depthBuffer.setFunc(DepthMode.LessEqualDepth)
 

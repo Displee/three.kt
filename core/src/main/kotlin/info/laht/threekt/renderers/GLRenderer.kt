@@ -1667,6 +1667,10 @@ class GLRenderer(
         state.resetBoundTextures()
     }
 
+    fun resetState() {
+        state.reset()
+    }
+
     private inner class OnMaterialDispose : EventLister {
         override fun onEvent(event: Event) {
             val material = event.target as Material
